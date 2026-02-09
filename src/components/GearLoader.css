@@ -1,0 +1,120 @@
+/* Planetary Gear Loader Styles */
+
+.gear-loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.gear-system {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Sun gear (center) */
+.sun-gear {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    z-index: 2;
+    animation: rotateSunGear 3s linear infinite;
+}
+
+.sun-gear .gear {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 8px rgba(139, 195, 74, 0.4));
+}
+
+/* Planet orbit container */
+.planet-orbit {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: orbitPlanets 4s linear infinite;
+}
+
+/* Planet gears */
+.planet-gear {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: rotatePlanetGear 3s linear infinite reverse;
+}
+
+.planet-gear .gear {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 6px rgba(139, 195, 74, 0.3));
+}
+
+/* Loading message */
+.gear-loader-message {
+    color: #e8e8e8;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Animations */
+
+/* Sun gear rotates clockwise */
+@keyframes rotateSunGear {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Planet gears rotate counter-clockwise (meshing with sun) */
+@keyframes rotatePlanetGear {
+    from {
+        transform: translateX(-50%) rotate(0deg);
+    }
+
+    to {
+        transform: translateX(-50%) rotate(360deg);
+    }
+}
+
+/* Planet gears orbit around sun gear */
+@keyframes orbitPlanets {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Subtle pulse for loading message */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+    .gear-loader-message {
+        font-size: 0.85rem;
+    }
+}

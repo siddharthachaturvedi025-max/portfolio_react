@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDrive } from '../context/DriveContext';
+import GearLoader from './GearLoader';
 
 /**
  * Google Drive-style modal viewer for PDFs, images, and documents
@@ -113,8 +114,8 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 <div className="file-viewer-header">
                     <div className="file-viewer-title">
                         <i className={`fas ${fileType === 'pdf' ? 'fa-file-pdf' :
-                                fileType === 'image' ? 'fa-image' :
-                                    fileType === 'word' ? 'fa-file-word' : 'fa-file'
+                            fileType === 'image' ? 'fa-image' :
+                                fileType === 'word' ? 'fa-file-word' : 'fa-file'
                             }`}></i>
                         <span>{file.name}</span>
                     </div>
@@ -142,8 +143,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 <div className="file-viewer-content">
                     {isLoading ? (
                         <div className="viewer-loading">
-                            <i className="fas fa-spinner fa-spin"></i>
-                            <p>Loading file from Google Drive...</p>
+                            <GearLoader size={100} message="Loading file from Google Drive..." />
                         </div>
                     ) : !fileUrl ? (
                         <div className="viewer-error">
