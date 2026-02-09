@@ -53,7 +53,20 @@ Upload images with these exact names to your Drive folder. If a file is missing,
 
 - **Project 5 (Test & Instrumentation)** - 1 Display Zone:
   - Add `test_instrumentation.jpg` (or up to 6: `test_instrumentation.jpg`, `test_instrumentation_2.jpg`, ..., `test_instrumentation_6.jpg`)
-- **Research**:
+
+### Supplementary Work (22 Files)
+
+Upload up to 22 files for the Supplementary Work section. Files will be displayed in a 3-column grid:
+
+- `supp1.jpg` through `supp22.jpg`
+- Can be any format: `.jpg`, `.png`, `.pdf`, `.docx`
+- Examples: `supp1.pdf`, `supp2.jpg`, `supp3.png`, etc.
+
+**Note**: When visitors click on these files, they'll open in a Google Drive-style viewer with download option. All downloads are tracked (see `DOWNLOAD_TRACKING_SETUP.md` for configuration).
+
+### Academic Research
+
+
   - `res_chassis.jpg` (or `.pdf`, `.docx`, `.png`)
   - `res_seal.jpg` (or `.pdf`, `.docx`, `.png`)
   - `res_pod.jpg` (or `.pdf`, `.docx`, `.png`)

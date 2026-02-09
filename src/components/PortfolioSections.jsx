@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DriveImage from './DriveImage';
 import DriveFile from './DriveFile';
 import ImageCarousel from './ImageCarousel';
+import FileViewer from './FileViewer';
 import { useDrive } from '../context/DriveContext';
 
 const MarkdownText = ({ text, className = "" }) => {
@@ -225,6 +226,21 @@ export const Projects = ({ data }) => {
 };
 
 export const Research = ({ data }) => {
+    const [viewerFile, setViewerFile] = useState(null);
+
+    const handleFileClick = (item) => {
+        setViewerFile({
+            name: item.image,
+            title: item.title,
+            section: 'Academic Research'
+        });
+    };
+
+    const handleDownload = (fileName, fileUrl) => {
+        // TODO: Implement download tracking
+        console.log('Download tracked:', fileName);
+    };
+
     return (
         <section className="research-section">
             <div className="container">
@@ -235,21 +251,51 @@ export const Research = ({ data }) => {
                             <h3>{item.title}</h3>
                             <p style={{ fontSize: '0.8rem', color: 'var(--matcha-main)' }}>{item.subtitle}</p>
                             <MarkdownText text={item.text} />
-                            <div className="mini-display-zone">
+                            <div
+                                className="mini-display-zone clickable"
+                                onClick={() => handleFileClick(item)}
+                            >
                                 <DriveFile name={item.image} alt={item.title} type="auto" />
                                 {!item.image && <div className="ph-content"><i className={`fas ${item.icon}`}></i></div>}
+                                <div className="file-overlay">
+                                    <i className="fas fa-search-plus"></i>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
+
+            {/* File Viewer Modal */}
+            {viewerFile && (
+                <FileViewer
+                    file={viewerFile}
+                    onClose={() => setViewerFile(null)}
+                    onDownload={handleDownload}
+                />
+            )}
         </section>
     );
 };
 
 export const Supplementary = () => {
     const [expanded, setExpanded] = useState(false);
-    const items = Array.from({ length: 8 }).map((_, i) => `supp${i + 1}.jpg`);
+    const [viewerFile, setViewerFile] = useState(null);
+    const items = Array.from({ length: 22 }).map((_, i) => ({
+        name: `supp${i + 1}.jpg`,
+        title: `Supplementary ${i + 1}`,
+        section: 'Supplementary Work'
+    }));
+
+    const handleFileClick = (file) => {
+        setViewerFile(file);
+    };
+
+    const handleDownload = (fileName, fileUrl) => {
+        // TODO: Implement download tracking with email notification
+        console.log('Download tracked:', fileName);
+        // This will require a serverless function to send email notifications
+    };
 
     return (
         <section className="supp-section">
@@ -258,7 +304,7 @@ export const Supplementary = () => {
                     <span className="section-subtitle">Additional Portfolio</span>
                     <h2 style={{ display: 'inline-block', marginRight: '20px' }}>Supplementary Work</h2>
                     <i className={`fas fa-chevron-down`} style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: '0.3s' }}></i>
-                    <p>Click to view additional design samples and documentation.</p>
+                    <p>Click to view 22 additional design samples and documentation.</p>
                 </div>
                 <div className="supp-grid" style={{
                     maxHeight: expanded ? '5000px' : '0',
@@ -267,13 +313,29 @@ export const Supplementary = () => {
                     overflow: 'hidden',
                     transition: '0.8s ease'
                 }}>
-                    {items.map((img, i) => (
-                        <div className="supp-card" key={i}>
-                            <DriveFile name={img} alt={`Supplementary ${i + 1}`} type="auto" />
+                    {items.map((item, i) => (
+                        <div
+                            className="supp-card clickable"
+                            key={i}
+                            onClick={() => handleFileClick(item)}
+                        >
+                            <DriveFile name={item.name} alt={item.title} type="auto" />
+                            <div className="supp-overlay">
+                                <i className="fas fa-search-plus"></i>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
+
+            {/* File Viewer Modal */}
+            {viewerFile && (
+                <FileViewer
+                    file={viewerFile}
+                    onClose={() => setViewerFile(null)}
+                    onDownload={handleDownload}
+                />
+            )}
         </section>
     );
 };
