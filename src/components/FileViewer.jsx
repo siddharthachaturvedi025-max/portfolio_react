@@ -169,12 +169,22 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                             )}
 
                             {fileType === 'pdf' && (
-                                <iframe
-                                    src={`${fileUrl}#view=FitH`}
-                                    className="viewer-pdf-frame"
-                                    title={file.name}
-                                    frameBorder="0"
-                                />
+                                <>
+                                    <iframe
+                                        src={`${fileUrl}#view=FitH`}
+                                        className="viewer-pdf-frame"
+                                        title={file.name}
+                                        frameBorder="0"
+                                    />
+                                    <div className="pdf-page-counter">
+                                        <i className="fas fa-file-pdf"></i>
+                                        <span>PDF Document</span>
+                                        <div className="pdf-scroll-hint">
+                                            <i className="fas fa-mouse"></i>
+                                            <span>Scroll to navigate pages</span>
+                                        </div>
+                                    </div>
+                                </>
                             )}
 
                             {fileType === 'word' && (
