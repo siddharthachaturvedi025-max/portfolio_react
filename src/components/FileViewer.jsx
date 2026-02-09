@@ -5,28 +5,34 @@ import GearLoader from './GearLoader';
 /**
  * Google Drive-style modal viewer for PDFs, images, and documents
  * Dark theme with center content and translucent margins
- * SupportsDownload tracking and full-page scrolling
+ * Supports download tracking and full-page scrolling
+ * Uses MIME types from Drive API for accurate file type detection
  */
 const FileViewer = ({ file, onClose, onDownload }) => {
-    const { files, loading } = useDrive();
+    const { files, fileData, loading } = useDrive();
     const [isLoading, setIsLoading] = useState(true);
 
     if (!file) return null;
 
-    // Get file URL from Drive context with comprehensive fallback handling
+    // Get file URL and metadata from Drive context with comprehensive fallback handling
     let fileUrl = null;
+    let fileMeta = null;
+
     if (files && file.name) {
         // Try exact match first
         fileUrl = files[file.name];
+        fileMeta = fileData?.[file.name];
 
         // Try lowercase match
         if (!fileUrl) {
             fileUrl = files[file.name.toLowerCase()];
+            fileMeta = fileData?.[file.name.toLowerCase()];
         }
 
         // Try uppercase match
         if (!fileUrl) {
             fileUrl = files[file.name.toUpperCase()];
+            fileMeta = fileData?.[file.name.toUpperCase()];
         }
 
         // Try matching base filename without extension
@@ -36,6 +42,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 const keyBase = key.split('.')[0].toLowerCase();
                 if (keyBase === baseNameWithoutExt) {
                     fileUrl = files[key];
+                    fileMeta = fileData?.[key];
                 }
             });
         }
@@ -44,7 +51,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
     // Update loading state after timeout or when file loads
     useEffect(() => {
         const timer = setTimeout(() => {
-            setIsLoading(false); // Stop loading after 3 seconds
+            setIsLoading(false);
         }, 3000);
 
         if (fileUrl || !loading) {
@@ -55,8 +62,18 @@ const FileViewer = ({ file, onClose, onDownload }) => {
         return () => clearTimeout(timer);
     }, [fileUrl, loading]);
 
-    // Determine file type
-    const getFileType = (filename) => {
+    // Determine file type using MIME type from Drive API (more reliable than extension)
+    const getFileType = (filename, metadata) => {
+        // First, try using MIME type from Drive API - THIS IS THE KEY FIX
+        if (metadata?.mimeType) {
+            const mime = metadata.mimeType;
+            console.log(`File: ${filename}, MIME: ${mime}`); // Debug logging
+            if (mime.startsWith('image/')) return 'image';
+            if (mime === 'application/pdf') return 'pdf';
+            if (mime.includes('word') || mime.includes('document')) return 'word';
+        }
+
+        // Fallback to extension-based detection
         if (!filename) return 'unknown';
         const ext = filename.toLowerCase().split('.').pop();
         if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return 'image';
@@ -65,7 +82,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
         return 'unknown';
     };
 
-    const fileType = getFileType(file.name);
+    const fileType = getFileType(file.name, fileMeta);
 
     const handleDownload = async () => {
         // Track download by calling Netlify function
@@ -114,10 +131,15 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 <div className="file-viewer-header">
                     <div className="file-viewer-title">
                         <i className={`fas ${fileType === 'pdf' ? 'fa-file-pdf' :
-                            fileType === 'image' ? 'fa-image' :
-                                fileType === 'word' ? 'fa-file-word' : 'fa-file'
+                                fileType === 'image' ? 'fa-image' :
+                                    fileType === 'word' ? 'fa-file-word' : 'fa-file'
                             }`}></i>
                         <span>{file.name}</span>
+                        {fileMeta && (
+                            <span style={{ fontSize: '0.75rem', color: '#888', marginLeft: '10px' }}>
+                                ({fileMeta.mimeType})
+                            </span>
+                        )}
                     </div>
                     <div className="file-viewer-actions">
                         <button
