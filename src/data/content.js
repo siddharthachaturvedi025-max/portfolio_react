@@ -64,17 +64,29 @@ export const content = {
             subtitle: "Switch Mobility Ltd.",
             title: "ODIN E1: BTMS Architecture",
             narrative: [
-                "As the Lead Design Engineer for the ODIN E1 platform, I held full ownership of the **Battery Thermal Management System (BTMS)**. This project demanded a synthesis of high-level CAD design and deep thermodynamic analysis. I designed the modular battery cradle using **SolidWorks** and **Stainless Steel 1.4003**, selected for its optimal balance of corrosion resistance and structural damping properties needed to survive the harsh **ISO 16750** vibration profiles of heavy-duty transit.",
-                "The critical challenge was achieving uniform thermal regulation across the distributed 7-pack configuration. Initial prototypes revealed significant thermal gradients. Leveraging **Ansys Fluent** for Phase 2 CFD analysis, I modeled the coolant flow dynamics and identified pressure drop zones. By iteratively optimizing the inlet orifice diameters, I balanced the hydraulic resistance of the parallel circuits. The result was a verified pump flow rate of **57 L/min** and a temperature variance of less than **3°C** across all modules under peak load."
+                "As the Lead Design Engineer for the ODIN E1 platform at **Switch Mobility**, I held full product ownership of the **Battery Thermal Management System (BTMS)** and EDU components. This demanding role required me to utilize agile skeleton models in **CATIA** and **Siemens NX** to define system architecture, ensure geometric compatibility across subsystems, and meet all critical R&D performance indicators (KPIs) through structured programme gateways.",
+                "I designed the modular battery cradle and HV enclosures using rigorous **GD&T** principles (**BS8888/ASME Y14.5**), creating detailed assembly models and technical drawings for manufacture. Material selection of **Stainless Steel 1.4003** was critical—offering an optimal balance of corrosion resistance and structural damping properties essential for surviving the harsh **ISO 16750-3** vibration profiles of heavy-duty electric transit applications.",
+                "The critical challenge was achieving uniform thermal regulation across the distributed 9-pack configuration. Initial prototype testing revealed significant thermal gradients and flow imbalances. Leveraging **Ansys Fluent CFD** analysis, I modeled the complete water-glycol coolant flow dynamics, identified pressure drop zones, and optimized seal designs with **HAZOP risk mitigation** protocols. By iteratively refining inlet orifice diameters and fluid paths, I achieved a verified **14% efficiency gain**, balancing hydraulic resistance across parallel circuits. Physical validation confirmed a pump flow rate of **57 L/min** and temperature variance of less than **3°C** across all modules under peak thermal load.",
+                "Beyond thermal design, I spearheaded **FEA-driven structural analysis** to balance weight optimization, NVH requirements, and crash safety for full homologation compliance. I also contributed to modular ePowertrain packaging by designing optimized liquid-cooled compressor housings and inverter plates, ensuring seamless serviceability for both commercial and passenger EV platforms."
             ],
             specs: [
                 { label: "Material", value: "SS 1.4003 Ferritic" },
-                { label: "Validation", value: "CFD Phase 2 / ISO 16750" },
-                { label: "Flow Rate", value: "57 L/min" }
+                { label: "Efficiency Gain", value: "14% CFD Validated" },
+                { label: "Validation", value: "ISO 16750-3 / HAZOP" }
             ],
             images: [
-                { id: "p1_draw", name: "odin_cradle.jpg", caption: "CRADLE DRAWING", icon: "fa-pen-ruler" },
-                { id: "p1_cfd", name: "odin_cfd.jpg", caption: "CFD HEATMAP", icon: "fa-wind" }
+                {
+                    id: "p1_draw",
+                    names: ["odin_cradle.jpg"], // Can add up to 6: odin_cradle_2.jpg, ..., odin_cradle_6.jpg
+                    caption: "CRADLE DRAWING",
+                    icon: "fa-pen-ruler"
+                },
+                {
+                    id: "p1_cfd",
+                    names: ["odin_cfd.jpg"], // Can add up to 6: odin_cfd_2.jpg, ..., odin_cfd_6.jpg
+                    caption: "CFD HEATMAP",
+                    icon: "fa-wind"
+                }
             ],
             reverse: false
         },
@@ -82,12 +94,18 @@ export const content = {
             subtitle: "Systems Integration",
             title: "Logic & Simulation",
             narrative: [
-                "Bridging the mechanical-software divide, I validated the **BMS Logic** for the ODIN 4.5 release. Utilizing **PCAN Explorer** to interface with the J1939 CAN bus, I logged real-time data to verify that thermal triggers—active cooling, heating, and standby modes—actuated correctly based on cell temperature thresholds. This validation was crucial for **ISO 26262** functional safety compliance.",
-                "Additionally, I modeled the kinematics of the Steering Box relative to suspension travel to eliminate bump steer. I also performed detailed calculations to determine the specific spring rate (13.52 N/mm) required for the AC Belt Tensioner, preventing slippage under peak torque loads of 110Nm."
+                "Engineering excellence demands more than isolated component design—it requires holistic systems integration. Throughout my work at **Switch Mobility**, I served as a critical arbitration point between disciplines, resolving complex integration issues through formal technical design reviews, JIRA backlog management, and agile methodologies to achieve all design freezes and project milestones.",
+                "Bridging the mechanical-software divide, I validated **BMS Logic** for the ODIN platform releases. Utilizing **PCAN Explorer** and diagnostic tools to interface with the **J1939 CAN bus**, I logged real-time thermal data to verify that cooling triggers—active cooling, heating, and standby modes—actuated correctly based on precise cell temperature thresholds. This comprehensive validation was essential for **ISO 26262** functional safety compliance and ensured flawless integration with vehicle control systems.",
+                "I supported prototype builds and virtual validation events, collaborating with cross-functional teams to troubleshoot legacy cooling system issues and enhance reliability. My work extended product lifecycle performance through meticulous thermal design reviews and rigorous testing protocols. Additionally, I modeled suspension and driveline kinematics, performed detailed spring rate calculations (13.52 N/mm for AC Belt Tensioner), and validated structural integrity to prevent component failure under dynamic loads exceeding 110Nm."
             ],
             specs: [], // No specs grid in this one
             images: [
-                { id: "p2_logic", name: "bms_logic.jpg", caption: "BMS LOGIC", icon: "fa-microchip" }
+                {
+                    id: "p2_logic",
+                    names: ["bms_logic.jpg"],
+                    caption: "BMS LOGIC",
+                    icon: "fa-microchip"
+                }
             ],
             reverse: true
         },
@@ -95,10 +113,18 @@ export const content = {
             subtitle: "Manufacturing",
             title: "Fabrication & DFM",
             narrative: [
-                "At BJS Fabrications, I led an initiative to standardize sheet metal enclosures through strict **Design for Manufacturing (DFM)** protocols. By analyzing the fabrication workflow, I simplified complex weldments and optimized bend radii for standard tooling. This collaboration with the shop floor reduced raw material wastage and lowered overall production costs by a confirmed **8%**."
+                "At **BJS Fabrications Ltd**, I designed and validated structural steel enclosures for high-temperature industrial systems using **SolidWorks** and **AutoCAD**. Each design underwent rigorous **FEA analysis** to verify load capacity, thermal performance, and structural integrity while ensuring strict **GD&T compliance** with **ASME Y14.5**, **BS 8888**, and **ISO 9001** manufacturing standards.",
+                "I developed innovative thermal management and cooling solutions through dedicated R&D initiatives, utilizing hand calculations for heat dissipation, stress analysis, and both static and dynamic load validation. These designs had to withstand stringent operational requirements in extreme high-temperature industrial environments, demanding both precision engineering and practical manufacturability.",
+                "Leading **DFM optimization**, I worked in close collaboration with workshop teams to analyze fabrication workflows, simplify complex weldments, and optimize bend radii for standard tooling capabilities. This hands-on partnership between design engineering and production reduced raw material wastage and lowered overall manufacturing costs while maintaining structural performance. Through root cause analysis of legacy failures and implementation of material upgrades and weldment optimizations, I enhanced product durability by **20%**.",
+                "I managed the complete project lifecycle from initial concept through delivery, creating detailed **DVP (Design Verification Plan)** documentation for safety-critical components and conducting formal Design Reviews to ensure compliance. Serving as the key arbitration point between architectural and workshop teams, I utilized agile methodologies to swiftly resolve design incompatibilities and maintain project momentum."
             ],
             images: [
-                { id: "p3_fab", name: "fabrication.jpg", caption: "FABRICATION RENDER", icon: "fa-industry" }
+                {
+                    id: "p3_fab",
+                    names: ["fabrication.jpg"],
+                    caption: "FABRICATION RENDER",
+                    icon: "fa-industry"
+                }
             ],
             reverse: false
         },
@@ -106,12 +132,44 @@ export const content = {
             subtitle: "Computational Design",
             title: "Topology & Lightweighting",
             narrative: [
-                "At Gajra Gears, I utilized **PTC Creo's Topology Optimization** suite to redesign cast aluminum gearbox housings (A356-T6). By defining load paths and constraints, I mathematically removed non-structural mass, achieving a **12% weight reduction** without compromising stress distribution. This approach is essential for modern defence and automotive applications where weight efficiency translates directly to performance."
+                "At **Gajra Gears Pvt. Ltd.**, I designed and optimized gearbox cooling systems and lightweight aluminum housings in **CATIA V5**. The challenge was achieving maximum mass reduction while maintaining thermal stability and structural integrity under demanding dynamic loading conditions for automotive and motorsport applications.",
+                "Utilizing **Topology Optimization** and **FEA thermal analysis** in PTC Creo, I mathematically defined load paths and constraints to systematically remove non-structural mass from cast **A356-T6 aluminum** gearbox housings. This computational approach achieved a verified **12% weight reduction** without compromising stress distribution or thermal performance—a critical achievement for high-performance drivetrains where every gram impacts acceleration and efficiency.",
+                "I led comprehensive **DFM reviews** for machined and welded thermal components, collaborating directly with manufacturing teams to optimize production processes and ensure designs met strict performance, weight, and durability targets. My work included detailed **tolerance stack-up analysis** and implementation of **GD&T per ASME Y14.5** for gearbox assemblies, ensuring proper fitment and thermal expansion compatibility across the entire operating temperature range.",
+                "Through focused R&D initiatives, I spearheaded thermal management improvements that increased product durability by **15%**. This involved analysing heat generation in existing transmissions, implementing strategic material selection, redesigning integrated cooling channels within housing designs, and developing self-cooling strategies. Each modification was validated through rigorous **FEA simulation** and hand calculations to optimize heat dissipation performance for extreme operating conditions in industrial and automotive environments."
             ],
             images: [
-                { id: "p4_opt", name: "topology.jpg", caption: "TOPOLOGY OPTIMIZATION", icon: "fa-cogs" }
+                {
+                    id: "p4_opt",
+                    names: ["topology.jpg"],
+                    caption: "TOPOLOGY OPTIMIZATION",
+                    icon: "fa-cogs"
+                }
             ],
             reverse: true
+        },
+        {
+            subtitle: "Validation & Quality",
+            title: "Test & Instrumentation",
+            narrative: [
+                "Rigorous validation is the cornerstone of reliable engineering. Throughout my career, I have designed and executed comprehensive test protocols to validate mechanical systems against **ISO**, **ASTM**, **Euro NCAP**, and industry-specific homologation standards. My experience spans destructive testing, fatigue analysis, durability validation, and environmental chamber testing to ensure components exceed real-world operational requirements.",
+                "At **Switch Mobility**, I led comprehensive validation of cooling systems and electromechanical components for the ODIN platform. I instrumented BTMS test rigs with **thermocouples, flow meters,** and **pressure transducers** to capture critical thermal and hydraulic data during extensive cycling tests. Using **DAQ systems** and custom **MATLAB** scripts, I processed real-time sensor data to validate design assumptions and verify performance against specifications. I conducted **vibration testing per ISO 16750-3** and physical validation protocols, ensuring battery cradles, cooling manifolds, and EDU components met stringent structural and durability requirements for heavy-duty electric vehicle applications. This work involved prototype build support, virtual validation events, and troubleshooting to enhance system reliability and extend product lifecycle.",
+                "During my tenure as **Test Engineer** at the **University of Leeds**, I led **ABS/ADAS** prototype validation using Virtuocity Simulators, performing **ISO 26262 FEA-backed failure analysis** and documenting corrective actions that improved system reliability by **10%**. I constructed hydraulic/pneumatic test rigs via computational modelling, delivering **12% efficiency gains** aligned with performance targets. I supported active suspension proof-of-concept development by correlating CAD models with endurance testing data, and collaborated with R&D teams to refine sensor integration and dynamic load testing for **Euro NCAP** crashworthiness compliance.",
+                "My validation approach combines theoretical calculations with empirical testing. I've developed comprehensive **DVP (Design Verification Plans)** for safety-critical components, led technical design reviews to ensure test coverage, and utilized both virtual simulation and physical prototype testing to de-risk designs before production release. This disciplined methodology has consistently delivered robust, validated mechanical systems that meet all performance, safety, and regulatory requirements."
+            ],
+            specs: [
+                { label: "Standards", value: "ISO 16750 / ASTM E8" },
+                { label: "Methods", value: "Vibration / Thermal / Fatigue" },
+                { label: "Tools", value: "DAQ / MATLAB / LabVIEW" }
+            ],
+            images: [
+                {
+                    id: "p5_test",
+                    names: ["test_instrumentation.jpg"],
+                    caption: "TEST SETUP",
+                    icon: "fa-vial"
+                }
+            ],
+            reverse: false
         }
     ],
     research: [

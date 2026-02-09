@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import DriveImage from './DriveImage';
+import DriveFile from './DriveFile';
+import ImageCarousel from './ImageCarousel';
 import { useDrive } from '../context/DriveContext';
 
 const MarkdownText = ({ text, className = "" }) => {
@@ -164,12 +166,20 @@ export const Projects = ({ data }) => {
                             </div>
                         ) : (
                             <div className="visual-stack">
-                                {proj.images.map((img, imgIdx) => (
-                                    <div className="display-zone" key={imgIdx}>
-                                        <DriveImage name={img.name} alt={img.caption} />
-                                        {!img.name && <div className="ph-content"><i className={`fas ${img.icon}`}></i><br />{img.caption}</div>}
-                                    </div>
-                                ))}
+                                {proj.images.map((imgGroup, imgIdx) => {
+                                    // Convert names array to image objects for carousel
+                                    const carouselImages = imgGroup.names.map((name, idx) => ({
+                                        name: name,
+                                        caption: imgGroup.caption,
+                                        icon: imgGroup.icon
+                                    }));
+
+                                    return (
+                                        <div className="display-zone" key={imgIdx}>
+                                            <ImageCarousel images={carouselImages} />
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
 
@@ -191,12 +201,20 @@ export const Projects = ({ data }) => {
                             </div>
                         ) : (
                             <div className="visual-stack">
-                                {proj.images.map((img, imgIdx) => (
-                                    <div className="display-zone" key={imgIdx}>
-                                        <DriveImage name={img.name} alt={img.caption} />
-                                        {!img.name && <div className="ph-content"><i className={`fas ${img.icon}`}></i><br />{img.caption}</div>}
-                                    </div>
-                                ))}
+                                {proj.images.map((imgGroup, imgIdx) => {
+                                    // Convert names array to image objects for carousel
+                                    const carouselImages = imgGroup.names.map((name, idx) => ({
+                                        name: name,
+                                        caption: imgGroup.caption,
+                                        icon: imgGroup.icon
+                                    }));
+
+                                    return (
+                                        <div className="display-zone" key={imgIdx}>
+                                            <ImageCarousel images={carouselImages} />
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
@@ -218,7 +236,7 @@ export const Research = ({ data }) => {
                             <p style={{ fontSize: '0.8rem', color: 'var(--matcha-main)' }}>{item.subtitle}</p>
                             <MarkdownText text={item.text} />
                             <div className="mini-display-zone">
-                                <DriveImage name={item.image} alt={item.title} />
+                                <DriveFile name={item.image} alt={item.title} type="auto" />
                                 {!item.image && <div className="ph-content"><i className={`fas ${item.icon}`}></i></div>}
                             </div>
                         </div>
@@ -251,7 +269,7 @@ export const Supplementary = () => {
                 }}>
                     {items.map((img, i) => (
                         <div className="supp-card" key={i}>
-                            <DriveImage name={img} alt={`Supplementary ${i + 1}`} />
+                            <DriveFile name={img} alt={`Supplementary ${i + 1}`} type="auto" />
                         </div>
                     ))}
                 </div>

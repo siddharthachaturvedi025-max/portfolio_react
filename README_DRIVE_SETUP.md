@@ -29,19 +29,45 @@ VITE_DRIVE_FOLDER_ID=your_folder_id_here
 ## Image Naming Guide
 Upload images with these exact names to your Drive folder. If a file is missing, the site will look for it in the local `public/images` folder, or show a placeholder.
 
+**Important Notes:**
+- Each **display zone** (like "Cradle Drawing" or "CFD Heatmap") can show 1-6 images that auto-cycle every 3 seconds
+- If only 1 image is uploaded for a zone, it displays as a static image (no animation)
+- ODIN has 2 separate display zones (Cradle and CFD), each can have its own set of 1-6 cycling images
+
+### Experience Section Images
+
 - **Profile**: `profile.jpg`
-- **Project 1 (ODIN)**: `odin_cradle.jpg`, `odin_cfd.jpg`
-- **Project 2 (Logic)**: `bms_logic.jpg`
-- **Project 3 (Fabrication)**: `fabrication.jpg`
-- **Project 4 (Topology)**: `topology.jpg`
+
+- **Project 1 (ODIN E1: BTMS Architecture)** - 2 Display Zones:
+  - **Cradle Zone**: Add `odin_cradle.jpg` (or up to 6: `odin_cradle.jpg`, `odin_cradle_2.jpg`, ..., `odin_cradle_6.jpg`)
+  - **CFD Zone**: Add `odin_cfd.jpg` (or up to 6: `odin_cfd.jpg`, `odin_cfd_2.jpg`, ..., `odin_cfd_6.jpg`)
+
+- **Project 2 (Logic & Simulation)** - 1 Display Zone:
+  - Add `bms_logic.jpg` (or up to 6: `bms_logic.jpg`, `bms_logic_2.jpg`, ..., `bms_logic_6.jpg`)
+
+- **Project 3 (Fabrication & DFM)** - 1 Display Zone:
+  - Add `fabrication.jpg` (or up to 6: `fabrication.jpg`, `fabrication_2.jpg`, ..., `fabrication_6.jpg`)
+
+- **Project 4 (Topology & Lightweighting)** - 1 Display Zone:
+  - Add `topology.jpg` (or up to 6: `topology.jpg`, `topology_2.jpg`, ..., `topology_6.jpg`)
+
+- **Project 5 (Test & Instrumentation)** - 1 Display Zone:
+  - Add `test_instrumentation.jpg` (or up to 6: `test_instrumentation.jpg`, `test_instrumentation_2.jpg`, ..., `test_instrumentation_6.jpg`)
 - **Research**:
-  - `res_chassis.jpg`
-  - `res_seal.jpg`
-  - `res_pod.jpg`
-  - `res_thermal.jpg`
-  - `res_trans.jpg`
-  - `res_mclaren.jpg`
-- **Supplementary**: `supp1.jpg` to `supp8.jpg`
+  - `res_chassis.jpg` (or `.pdf`, `.docx`, `.png`)
+  - `res_seal.jpg` (or `.pdf`, `.docx`, `.png`)
+  - `res_pod.jpg` (or `.pdf`, `.docx`, `.png`)
+  - `res_thermal.jpg` (or `.pdf`, `.docx`, `.png`)
+  - `res_trans.jpg` (or `.pdf`, `.docx`, `.png`)
+  - `res_mclaren.jpg` (or `.pdf`, `.docx`, `.png`)
+- **Supplementary**: `supp1.jpg` to `supp8.jpg` (or `.pdf`, `.docx`, `.png` for any)
+
+**Note**: Academic Research and Supplementary Work sections now support multiple file formats:
+- **Images**: `.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`
+- **Documents**: `.pdf` (displays with download button)
+- **Word Files**: `.doc`, `.docx` (displays with download button)
+
+Simply upload files with the correct name but different extensions (e.g., `res_chassis.pdf` instead of `res_chassis.jpg`).
 
 ## Resume
 Place your Resume PDF in the `public` folder and name it `resume.pdf`.
