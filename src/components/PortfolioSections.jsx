@@ -304,7 +304,7 @@ export const Supplementary = () => {
                     <span className="section-subtitle">Additional Portfolio</span>
                     <h2 style={{ display: 'inline-block', marginRight: '20px' }}>Supplementary Work</h2>
                     <i className={`fas fa-chevron-down`} style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: '0.3s' }}></i>
-                    <p>Click to view 22 additional design samples and documentation.</p>
+                    <p>Click to view additional design samples and documentation.</p>
                 </div>
                 <div className="supp-grid" style={{
                     maxHeight: expanded ? '5000px' : '0',

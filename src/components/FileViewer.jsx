@@ -1,23 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDrive } from '../context/DriveContext';
 
 /**
  * Google Drive-style modal viewer for PDFs, images, and documents
  * Dark theme with center content and translucent margins
- * Supports download tracking and full-page scrolling
+ * SupportsDownload tracking and full-page scrolling
  */
 const FileViewer = ({ file, onClose, onDownload }) => {
-    const { files } = useDrive();
+    const { files, loading } = useDrive();
+    const [isLoading, setIsLoading] = useState(true);
 
     if (!file) return null;
 
-    // Get file URL from Drive context
+    // Get file URL from Drive context with comprehensive fallback handling
     let fileUrl = null;
-    if (files && files[file.name]) {
+    if (files && file.name) {
+        // Try exact match first
         fileUrl = files[file.name];
-    } else if (files && file.name && files[file.name.toLowerCase()]) {
-        fileUrl = files[file.name.toLowerCase()];
+
+        // Try lowercase match
+        if (!fileUrl) {
+            fileUrl = files[file.name.toLowerCase()];
+        }
+
+        // Try uppercase match
+        if (!fileUrl) {
+            fileUrl = files[file.name.toUpperCase()];
+        }
+
+        // Try matching base filename without extension
+        if (!fileUrl) {
+            const baseNameWithoutExt = file.name.split('.')[0].toLowerCase();
+            Object.keys(files).forEach(key => {
+                const keyBase = key.split('.')[0].toLowerCase();
+                if (keyBase === baseNameWithoutExt) {
+                    fileUrl = files[key];
+                }
+            });
+        }
     }
+
+    // Update loading state after timeout or when file loads
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false); // Stop loading after 3 seconds
+        }, 3000);
+
+        if (fileUrl || !loading) {
+            setIsLoading(false);
+            clearTimeout(timer);
+        }
+
+        return () => clearTimeout(timer);
+    }, [fileUrl, loading]);
 
     // Determine file type
     const getFileType = (filename) => {
@@ -33,27 +68,35 @@ const FileViewer = ({ file, onClose, onDownload }) => {
 
     const handleDownload = async () => {
         // Track download by calling Netlify function
-        if (onDownload) {
-            try {
-                await fetch('/.netlify/functions/track-download', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fileName: file.name,
-                        section: file.section || 'Unknown'
-                    })
-                });
-                onDownload(file.name, fileUrl);
-            } catch (error) {
-                console.error('Error tracking download:', error);
-                // Continue with download even if tracking fails
-                onDownload(file.name, fileUrl);
-            }
+        try {
+            await fetch('/.netlify/functions/track-download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fileName: file.name,
+                    section: file.section || 'Unknown'
+                })
+            });
+        } catch (error) {
+            console.error('Error tracking download:', error);
         }
 
-        // Open file in new tab for download
+        // Open file for download or viewing
         if (fileUrl) {
-            window.open(fileUrl, '_blank');
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = file.name;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            if (onDownload) {
+                onDownload(file.name, fileUrl);
+            }
+        } else {
+            alert('File URL not available. Please check that the file is uploaded to Google Drive.');
         }
     };
 
@@ -70,8 +113,8 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 <div className="file-viewer-header">
                     <div className="file-viewer-title">
                         <i className={`fas ${fileType === 'pdf' ? 'fa-file-pdf' :
-                            fileType === 'image' ? 'fa-image' :
-                                fileType === 'word' ? 'fa-file-word' : 'fa-file'
+                                fileType === 'image' ? 'fa-image' :
+                                    fileType === 'word' ? 'fa-file-word' : 'fa-file'
                             }`}></i>
                         <span>{file.name}</span>
                     </div>
@@ -80,6 +123,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                             className="viewer-btn download-btn"
                             onClick={handleDownload}
                             title="Download"
+                            disabled={!fileUrl}
                         >
                             <i className="fas fa-download"></i>
                             Download
@@ -96,7 +140,27 @@ const FileViewer = ({ file, onClose, onDownload }) => {
 
                 {/* Content area */}
                 <div className="file-viewer-content">
-                    {fileUrl ? (
+                    {isLoading ? (
+                        <div className="viewer-loading">
+                            <i className="fas fa-spinner fa-spin"></i>
+                            <p>Loading file from Google Drive...</p>
+                        </div>
+                    ) : !fileUrl ? (
+                        <div className="viewer-error">
+                            <i className="fas fa-exclamation-triangle"></i>
+                            <h3>File Not Found</h3>
+                            <p>Unable to load <strong>{file.name}</strong> from Google Drive.</p>
+                            <div style={{ marginTop: '20px', padding: '15px', background: '#2a2a2a', borderRadius: '4px', fontSize: '0.9rem', textAlign: 'left', maxWidth: '500px' }}>
+                                <p style={{ marginBottom: '10px' }}><strong>Possible issues:</strong></p>
+                                <ul style={{ marginLeft: '20px', lineHeight: '1.8', color: '#aaa' }}>
+                                    <li>File not uploaded to Google Drive folder</li>
+                                    <li>File name doesn't match exactly (check capitalization)</li>
+                                    <li>Drive API key not configured in `.env`</li>
+                                    <li>File permissions not set to "Anyone with link"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    ) : (
                         <>
                             {fileType === 'image' && (
                                 <div className="viewer-image-container">
@@ -147,11 +211,6 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                                 </div>
                             )}
                         </>
-                    ) : (
-                        <div className="viewer-loading">
-                            <i className="fas fa-spinner fa-spin"></i>
-                            <p>Loading file...</p>
-                        </div>
                     )}
                 </div>
             </div>
