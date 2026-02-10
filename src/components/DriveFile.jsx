@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDrive } from '../context/DriveContext';
+import PDFThumbnail from './PDFThumbnail';
 
 /**
  * Enhanced component to display various file types from Google Drive
@@ -69,46 +70,22 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
         );
     }
 
-    // Handle PDF files - Show first page as thumbnail using iframe
+    // Handle PDF files - Render first page using PDF.js
     if (fileType === 'pdf') {
-        // Use preview URL to show first page of PDF
-        const pdfPreviewUrl = fileMeta?.thumbnailUrl || fileMeta?.viewUrl || fileUrl;
-
-        // Debug logging
-        if (!pdfPreviewUrl) {
-            console.warn(`No PDF preview URL available for: ${name}`);
-        } else {
-            console.log(`PDF Preview URL for ${name}:`, pdfPreviewUrl);
-        }
+        // Use downloadUrl for PDF.js to fetch and render
+        const pdfUrl = fileMeta?.downloadUrl || fileUrl;
+        const pdfViewUrl = fileMeta?.viewUrl || fileUrl;
 
         return (
             <div className={`file-display pdf-display ${className}`} style={{ background: 'transparent', padding: 0 }}>
                 <div className="pdf-preview-wrapper">
-                    {pdfPreviewUrl ? (
+                    {pdfUrl ? (
                         <>
-                            {/* Show first page of PDF in iframe */}
-                            <iframe
-                                src={pdfPreviewUrl}
-                                className="pdf-thumbnail-iframe"
-                                title={alt || name}
-                                frameBorder="0"
-                                scrolling="no"
-                                sandbox="allow-same-origin allow-scripts"
-                                style={{
-                                    width: '100%',
-                                    height: '260px',
-                                    border: 'none',
-                                    pointerEvents: 'none',
-                                    display: 'block',
-                                    borderRadius: '8px',
-                                    background: '#fff'
-                                }}
-                                onLoad={() => console.log(`PDF iframe loaded for: ${name}`)}
-                                onError={() => console.error(`PDF iframe failed to load for: ${name}`)}
-                            />
+                            {/* Render first page using PDF.js */}
+                            <PDFThumbnail url={pdfUrl} alt={alt || name} />
                             <div className="pdf-overlay">
                                 <a
-                                    href={pdfPreviewUrl}
+                                    href={pdfViewUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="file-download-btn"
