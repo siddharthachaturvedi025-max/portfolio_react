@@ -719,7 +719,11 @@ footer {
   }
 
   .nav-right {
-    display: none;
+    gap: 10px;
+  }
+
+  .nav-right a {
+    font-size: 0.85rem;
   }
 
   /* Hero Section */

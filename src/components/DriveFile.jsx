@@ -94,10 +94,10 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
                                 <iframe
                                     src={pdfViewUrl}
                                     style={{
-                                        width: '230%',
-                                        height: '600px',
+                                        width: '280%',
+                                        height: '700px',
                                         border: 'none',
-                                        transform: 'scale(0.43)',
+                                        transform: 'scale(0.36)',
                                         transformOrigin: 'center center',
                                         pointerEvents: 'none'
                                     }}
