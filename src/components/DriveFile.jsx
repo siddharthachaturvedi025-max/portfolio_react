@@ -86,16 +86,19 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
                                 height: '260px',
                                 overflow: 'hidden',
                                 borderRadius: '8px',
-                                background: '#fff'
+                                background: '#fff',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}>
                                 <iframe
                                     src={pdfViewUrl}
                                     style={{
-                                        width: '100%',
+                                        width: '230%',
                                         height: '600px',
                                         border: 'none',
                                         transform: 'scale(0.43)',
-                                        transformOrigin: 'top left',
+                                        transformOrigin: 'center center',
                                         pointerEvents: 'none'
                                     }}
                                     title={alt || name}
