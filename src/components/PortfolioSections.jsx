@@ -291,7 +291,7 @@ export const Supplementary = () => {
     const [expanded, setExpanded] = useState(false);
     const [viewerFile, setViewerFile] = useState(null);
     const items = Array.from({ length: 22 }).map((_, i) => ({
-        name: `supp${i + 1}.jpg`,
+        name: `supp${i + 1}.pdf`,
         title: `Supplementary ${i + 1}`,
         section: 'Supplementary Work'
     }));
