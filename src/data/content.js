@@ -177,42 +177,42 @@ export const content = {
             title: "Automotive Chassis Engineering",
             subtitle: "MECH 5185M | Suspension & Steering",
             text: "Performed a complete elasto-kinematic analysis of a vehicle chassis. Calculated spring rates (Front: 16 N/mm, Rear: 35 N/mm) and damper sizing. Optimized Ackermann steering geometry to minimize tyre scrub torque (~103 Nm) and validated steady-state cornering load transfers using MATLAB models.",
-            image: "res_chassis.jpg",
+            image: "res_chassis.pdf",
             icon: "fa-car-side"
         },
         {
             title: "Advanced FEA: Door Seal",
             subtitle: "MECH 5680M | Hyperelastic Simulation",
             text: "Conducted non-linear FEA of an EPDM door seal using Abaqus Explicit. Characterized hyperelastic material behaviour using Mooney-Rivlin and Arruda-Boyce models. Simulated complex contact pressure and Compression Load Deflection (CLD) to optimize sealing efficiency and minimize door closing effort (92N).",
-            image: "res_seal.jpg",
+            image: "res_seal.pdf",
             icon: "fa-file-pdf"
         },
         {
             title: "Autonomous Pod Powertrain",
             subtitle: "MECH 5880M | Team Design",
             text: "Lead Powertrain Engineer for a Level 5 Connected Autonomous Vehicle (CAV). Engineered a **31.49 kWh liquid-cooled battery pack**. The design achieved a packaging efficiency of 3.31 m³ by optimizing module arrangement. Conducted thermal calculations to ensure cell temperatures remained under 35°C. Energy efficiency of **244.59 Wh/km**.",
-            image: "res_pod.jpg",
+            image: "res_pod.pdf",
             icon: "fa-battery-full"
         },
         {
             title: "Transient Thermal FEA",
             subtitle: "MSc Thesis",
             text: "Developed a transient FEA model in **Abaqus** to simulate heat generation in carbon-ceramic disc brakes (0-600°C). By iteratively optimizing the cooling vane geometry, I increased airflow velocity, resulting in an **8% reduction in peak surface temperatures**.",
-            image: "res_thermal.jpg",
+            image: "res_thermal.pdf",
             icon: "fa-fire"
         },
         {
             title: "Formula E Transmission",
             subtitle: "MECH 5125M | Driveline",
             text: "Designed a high-performance single-speed transmission for 900Nm torque. Performed Hertzian contact stress calculations and casing topology optimization.",
-            image: "res_trans.jpg",
+            image: "res_battery.pdf",
             icon: "fa-cog"
         },
         {
             title: "McLaren F1 Analysis",
             subtitle: "MECH 3470 | Vehicle Design",
             text: "Forensic engineering analysis of double-wishbone suspension kinematics and central seating position's effect on CG and handling.",
-            image: "res_mclaren.jpg",
+            image: "res_validation.pdf",
             icon: "fa-flag-checkered"
         }
     ]
