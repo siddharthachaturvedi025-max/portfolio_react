@@ -52,8 +52,10 @@ export const DriveProvider = ({ children }) => {
             thumbnailUrl = `https://lh3.googleusercontent.com/d/${file.id}`;
 
             if (file.mimeType === 'application/pdf') {
-              // PDFs: Use preview URL for full scrollable viewing in iframe
+              // PDFs: Use embed URL for better iframe compatibility in thumbnails
               viewUrl = `https://drive.google.com/file/d/${file.id}/preview`;
+              // Also provide an embeddable version for thumbnails
+              thumbnailUrl = `https://drive.google.com/file/d/${file.id}/preview`;
               downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
             } else if (file.mimeType?.startsWith('image/')) {
               // Images: Use thumbnail URL (it works and is fast)

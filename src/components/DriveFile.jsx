@@ -72,7 +72,14 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
     // Handle PDF files - Show first page as thumbnail using iframe
     if (fileType === 'pdf') {
         // Use preview URL to show first page of PDF
-        const pdfPreviewUrl = fileMeta?.viewUrl || fileUrl;
+        const pdfPreviewUrl = fileMeta?.thumbnailUrl || fileMeta?.viewUrl || fileUrl;
+
+        // Debug logging
+        if (!pdfPreviewUrl) {
+            console.warn(`No PDF preview URL available for: ${name}`);
+        } else {
+            console.log(`PDF Preview URL for ${name}:`, pdfPreviewUrl);
+        }
 
         return (
             <div className={`file-display pdf-display ${className}`} style={{ background: 'transparent', padding: 0 }}>
@@ -81,11 +88,12 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
                         <>
                             {/* Show first page of PDF in iframe */}
                             <iframe
-                                src={`${pdfPreviewUrl}`}
+                                src={pdfPreviewUrl}
                                 className="pdf-thumbnail-iframe"
                                 title={alt || name}
                                 frameBorder="0"
                                 scrolling="no"
+                                sandbox="allow-same-origin allow-scripts"
                                 style={{
                                     width: '100%',
                                     height: '260px',
@@ -95,6 +103,8 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
                                     borderRadius: '8px',
                                     background: '#fff'
                                 }}
+                                onLoad={() => console.log(`PDF iframe loaded for: ${name}`)}
+                                onError={() => console.error(`PDF iframe failed to load for: ${name}`)}
                             />
                             <div className="pdf-overlay">
                                 <a
