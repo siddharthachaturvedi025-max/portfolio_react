@@ -52,10 +52,10 @@ export const DriveProvider = ({ children }) => {
             thumbnailUrl = `https://lh3.googleusercontent.com/d/${file.id}`;
 
             if (file.mimeType === 'application/pdf') {
-              // PDFs: Use embed URL for better iframe compatibility in thumbnails
+              // PDFs: Use embed URL for preview
               viewUrl = `https://drive.google.com/file/d/${file.id}/preview`;
-              // Also provide an embeddable version for thumbnails
-              thumbnailUrl = `https://drive.google.com/file/d/${file.id}/preview`;
+              // Use Netlify proxy function to bypass CORS for PDF downloads
+              thumbnailUrl = `/.netlify/functions/proxy-pdf?id=${file.id}`;
               downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
             } else if (file.mimeType?.startsWith('image/')) {
               // Images: Use thumbnail URL (it works and is fast)
