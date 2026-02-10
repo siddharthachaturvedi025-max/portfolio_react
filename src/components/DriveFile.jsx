@@ -70,79 +70,116 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
         );
     }
 
-    // Handle PDF files - Show styled placeholder
+    // Handle PDF files - Show first page preview with iframe
     if (fileType === 'pdf') {
         const pdfViewUrl = fileMeta?.viewUrl || fileUrl;
 
         return (
             <div className={`file-display pdf-display ${className}`} style={{ background: 'transparent', padding: 0 }}>
-                <div className="pdf-preview-wrapper">
-                    <div className="pdf-placeholder" style={{
-                        background: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
-                        padding: '40px 20px',
-                        minHeight: '260px',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }}>
-                        {/* Background pattern */}
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)',
-                            pointerEvents: 'none'
-                        }}></div>
+                <div className="pdf-preview-wrapper" style={{ position: 'relative' }}>
+                    {pdfViewUrl ? (
+                        <>
+                            {/* Show PDF preview in iframe - scaled to show first page */}
+                            <div style={{
+                                position: 'relative',
+                                width: '100%',
+                                height: '260px',
+                                overflow: 'hidden',
+                                borderRadius: '8px',
+                                background: '#fff'
+                            }}>
+                                <iframe
+                                    src={pdfViewUrl}
+                                    style={{
+                                        width: '100%',
+                                        height: '600px',
+                                        border: 'none',
+                                        transform: 'scale(0.43)',
+                                        transformOrigin: 'top left',
+                                        pointerEvents: 'none'
+                                    }}
+                                    title={alt || name}
+                                />
+                                {/* Overlay gradient for better visibility */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: '60px',
+                                    background: 'linear-gradient(to top, rgba(0,0,0,0.3), transparent)',
+                                    pointerEvents: 'none'
+                                }}></div>
+                            </div>
+                            <div className="pdf-overlay">
+                                <a
+                                    href={pdfViewUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="file-download-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                >
+                                    <i className="fas fa-external-link-alt"></i> View Full PDF
+                                </a>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="pdf-placeholder" style={{
+                            background: 'linear-gradient(135deg, var(--matcha-main) 0%, var(--matcha-dark) 100%)',
+                            padding: '40px 20px',
+                            minHeight: '260px',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            position: 'relative',
+                            overflow: 'hidden'
+                        }}>
+                            {/* Background pattern */}
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)',
+                                pointerEvents: 'none'
+                            }}></div>
 
-                        {/* Content */}
-                        <i className="fas fa-file-pdf" style={{
-                            fontSize: '4rem',
-                            color: '#fff',
-                            marginBottom: '15px',
-                            position: 'relative',
-                            zIndex: 1
-                        }}></i>
-                        <p style={{
-                            marginTop: '0',
-                            fontWeight: '600',
-                            color: '#fff',
-                            fontSize: '0.95rem',
-                            textAlign: 'center',
-                            position: 'relative',
-                            zIndex: 1,
-                            maxWidth: '90%'
-                        }}>{alt || name}</p>
-                        <span style={{
-                            marginTop: '8px',
-                            padding: '4px 12px',
-                            background: 'rgba(255,255,255,0.2)',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            color: '#fff',
-                            fontWeight: '500',
-                            position: 'relative',
-                            zIndex: 1
-                        }}>PDF Document</span>
-                    </div>
-                    <div className="pdf-overlay">
-                        <a
-                            href={pdfViewUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="file-download-btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                            }}
-                        >
-                            <i className="fas fa-external-link-alt"></i> View Full PDF
-                        </a>
-                    </div>
+                            {/* Content */}
+                            <i className="fas fa-file-pdf" style={{
+                                fontSize: '4rem',
+                                color: '#fff',
+                                marginBottom: '15px',
+                                position: 'relative',
+                                zIndex: 1
+                            }}></i>
+                            <p style={{
+                                marginTop: '0',
+                                fontWeight: '600',
+                                color: '#fff',
+                                fontSize: '0.95rem',
+                                textAlign: 'center',
+                                position: 'relative',
+                                zIndex: 1,
+                                maxWidth: '90%'
+                            }}>{alt || name}</p>
+                            <span style={{
+                                marginTop: '8px',
+                                padding: '4px 12px',
+                                background: 'rgba(255,255,255,0.2)',
+                                borderRadius: '12px',
+                                fontSize: '0.75rem',
+                                color: '#fff',
+                                fontWeight: '500',
+                                position: 'relative',
+                                zIndex: 1
+                            }}>PDF Document</span>
+                        </div>
+                    )}
                 </div>
             </div>
         );
