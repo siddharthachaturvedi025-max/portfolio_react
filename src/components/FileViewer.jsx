@@ -5,12 +5,13 @@ import GearLoader from './GearLoader';
 /**
  * Google Drive-style modal viewer for PDFs, images, and documents
  * Dark theme with center content and translucent margins
- * Supports download tracking and full-page scrolling
+ * Supports download tracking and page-by-page PDF navigation
  * Uses MIME types from Drive API for accurate file type detection
  */
 const FileViewer = ({ file, onClose, onDownload }) => {
     const { files, fileData, loading } = useDrive();
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
 
     if (!file) return null;
 
@@ -48,6 +49,11 @@ const FileViewer = ({ file, onClose, onDownload }) => {
         }
     }
 
+    // Reset page when file changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [file.name]);
+
     // Update loading state after timeout or when file loads
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -64,10 +70,10 @@ const FileViewer = ({ file, onClose, onDownload }) => {
 
     // Determine file type using MIME type from Drive API (more reliable than extension)
     const getFileType = (filename, metadata) => {
-        // First, try using MIME type from Drive API - THIS IS THE KEY FIX
+        // First, try using MIME type from Drive API
         if (metadata?.mimeType) {
             const mime = metadata.mimeType;
-            console.log(`File: ${filename}, MIME: ${mime}`); // Debug logging
+            console.log(`File: ${filename}, MIME: ${mime}`);
             if (mime.startsWith('image/')) return 'image';
             if (mime === 'application/pdf') return 'pdf';
             if (mime.includes('word') || mime.includes('document')) return 'word';
@@ -113,7 +119,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
             document.body.removeChild(link);
 
             if (onDownload) {
-                onDownload(file.name, fileUrl);
+                onDownload(file.name, downloadUrl);
             }
         } else {
             alert('File URL not available. Please check that the file is uploaded to Google Drive.');
@@ -126,6 +132,21 @@ const FileViewer = ({ file, onClose, onDownload }) => {
         }
     };
 
+    // PDF page URL with specific page number
+    const getPdfPageUrl = (page) => {
+        if (!fileUrl || fileType !== 'pdf') return fileUrl;
+        // Google Drive preview supports #page= parameter
+        return `${fileUrl}#page=${page}`;
+    };
+
+    const handleNextPage = () => {
+        setCurrentPage(prev => prev + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(prev => Math.max(1, prev - 1));
+    };
+
     return (
         <div className="file-viewer-overlay" onClick={handleBackdropClick}>
             <div className="file-viewer-container">
@@ -133,8 +154,8 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 <div className="file-viewer-header">
                     <div className="file-viewer-title">
                         <i className={`fas ${fileType === 'pdf' ? 'fa-file-pdf' :
-                            fileType === 'image' ? 'fa-image' :
-                                fileType === 'word' ? 'fa-file-word' : 'fa-file'
+                                fileType === 'image' ? 'fa-image' :
+                                    fileType === 'word' ? 'fa-file-word' : 'fa-file'
                             }`}></i>
                         <span>{file.name}</span>
                         {fileMeta && (
@@ -195,18 +216,33 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                             {fileType === 'pdf' && (
                                 <>
                                     <iframe
-                                        src={`${fileUrl}#view=FitH`}
+                                        key={currentPage}
+                                        src={getPdfPageUrl(currentPage)}
                                         className="viewer-pdf-frame"
                                         title={file.name}
                                         frameBorder="0"
                                     />
-                                    <div className="pdf-page-counter">
-                                        <i className="fas fa-file-pdf"></i>
-                                        <span>PDF Document</span>
-                                        <div className="pdf-scroll-hint">
-                                            <i className="fas fa-mouse"></i>
-                                            <span>Scroll to navigate pages</span>
+                                    {/* PDF Navigation Controls */}
+                                    <div className="pdf-navigation">
+                                        <button
+                                            className="pdf-nav-btn prev-btn"
+                                            onClick={handlePrevPage}
+                                            disabled={currentPage === 1}
+                                            title="Previous Page"
+                                        >
+                                            <i className="fas fa-chevron-left"></i>
+                                        </button>
+                                        <div className="pdf-page-indicator">
+                                            <i className="fas fa-file-pdf"></i>
+                                            <span>Page {currentPage}</span>
                                         </div>
+                                        <button
+                                            className="pdf-nav-btn next-btn"
+                                            onClick={handleNextPage}
+                                            title="Next Page"
+                                        >
+                                            <i className="fas fa-chevron-right"></i>
+                                        </button>
                                     </div>
                                 </>
                             )}

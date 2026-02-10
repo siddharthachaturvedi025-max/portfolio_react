@@ -228,6 +228,15 @@ export const Projects = ({ data }) => {
 export const Research = ({ data }) => {
     const [viewerFile, setViewerFile] = useState(null);
 
+    const files = [
+        { name: 'res_chassis.pdf', title: 'Chassis Research', section: 'Academic Research' },
+        { name: 'res_seal.pdf', title: 'Seal Research', section: 'Academic Research' },
+        { name: 'res_pod.pdf', title: 'Pod Research', section: 'Academic Research' },
+        { name: 'res_battery.pdf', title: 'Battery Research', section: 'Academic Research' },
+        { name: 'res_thermal.pdf', title: 'Thermal Research', section: 'Academic Research' },
+        { name: 'res_validation.pdf', title: 'Validation Research', section: 'Academic Research' }
+    ];
+
     const handleFileClick = (item) => {
         setViewerFile({
             name: item.image,
