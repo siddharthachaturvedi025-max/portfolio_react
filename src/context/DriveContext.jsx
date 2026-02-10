@@ -40,16 +40,19 @@ export const DriveProvider = ({ children }) => {
 
         if (data.files) {
           data.files.forEach(file => {
-            // Generate proper URLs based on MIME type for full file access
-            let viewUrl, downloadUrl;
+            // Generate proper URLs based on MIME type
+            let viewUrl, downloadUrl, thumbnailUrl;
+
+            // Thumbnail URL works for both images and PDFs
+            thumbnailUrl = `https://lh3.googleusercontent.com/d/${file.id}`;
 
             if (file.mimeType === 'application/pdf') {
               // PDFs: Use preview URL for full scrollable viewing in iframe
               viewUrl = `https://drive.google.com/file/d/${file.id}/preview`;
               downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
             } else if (file.mimeType?.startsWith('image/')) {
-              // Images: Use direct view URL for high quality
-              viewUrl = `https://drive.google.com/uc?export=view&id=${file.id}`;
+              // Images: Use thumbnail URL (it works and is fast)
+              viewUrl = thumbnailUrl;
               downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
             } else {
               // Other files: Direct download
@@ -57,22 +60,22 @@ export const DriveProvider = ({ children }) => {
               downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
             }
 
-            // Map filename to viewable URL (for thumbnails and viewer)
+            // Map filename to viewable URL
             fileMap[file.name] = viewUrl;
             fileMap[file.name.toLowerCase()] = viewUrl;
 
-            // Rich Metadata with both URLs
+            // Rich Metadata with all URLs
             metaMap[file.name] = {
               ...file,
               viewUrl,
               downloadUrl,
-              thumbnailUrl: `https://lh3.googleusercontent.com/d/${file.id}` // For thumbnails
+              thumbnailUrl
             };
             metaMap[file.name.toLowerCase()] = {
               ...file,
               viewUrl,
               downloadUrl,
-              thumbnailUrl: `https://lh3.googleusercontent.com/d/${file.id}`
+              thumbnailUrl
             };
           });
         }

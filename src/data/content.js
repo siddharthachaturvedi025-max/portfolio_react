@@ -77,13 +77,13 @@ export const content = {
             images: [
                 {
                     id: "p1_draw",
-                    names: ["odin_cradle.jpg"], // Can add up to 6: odin_cradle_2.jpg, ..., odin_cradle_6.jpg
+                    names: ["odin_cradle.jpg", "odin_cradle_2.jpg"],
                     caption: "CRADLE DRAWING",
                     icon: "fa-pen-ruler"
                 },
                 {
                     id: "p1_cfd",
-                    names: ["odin_cfd.jpg"], // Can add up to 6: odin_cfd_2.jpg, ..., odin_cfd_6.jpg
+                    names: ["odin_cfd.jpg", "odin_cfd_2.jpg", "odin_cfd_3.jpg"],
                     caption: "CFD HEATMAP",
                     icon: "fa-wind"
                 }
@@ -102,7 +102,7 @@ export const content = {
             images: [
                 {
                     id: "p2_logic",
-                    names: ["bms_logic.jpg"],
+                    names: ["bms_logic.jpg", "bms_logic_2.jpg", "bms_logic_3.jpg", "bms_logic_4.jpg", "bms_logic_5.jpg"],
                     caption: "BMS LOGIC",
                     icon: "fa-microchip"
                 }
@@ -121,7 +121,7 @@ export const content = {
             images: [
                 {
                     id: "p3_fab",
-                    names: ["fabrication.jpg"],
+                    names: ["fabrication.jpg", "fabrication_2.jpg", "fabrication_3.jpg", "fabrication_4.jpg", "fabrication_5.jpg", "fabrication_6.jpg"],
                     caption: "FABRICATION RENDER",
                     icon: "fa-industry"
                 }
@@ -140,7 +140,7 @@ export const content = {
             images: [
                 {
                     id: "p4_opt",
-                    names: ["topology.jpg"],
+                    names: ["topology.jpg", "topology_2.jpg"],
                     caption: "TOPOLOGY OPTIMIZATION",
                     icon: "fa-cogs"
                 }
@@ -164,7 +164,7 @@ export const content = {
             images: [
                 {
                     id: "p5_test",
-                    names: ["test_instrumentation.jpg"],
+                    names: ["test_instrumentation.jpg", "test_instrumentation_2.jpg", "test_instrumentation_3.jpg", "test_instrumentation_4.jpg"],
                     caption: "TEST SETUP",
                     icon: "fa-vial"
                 }
