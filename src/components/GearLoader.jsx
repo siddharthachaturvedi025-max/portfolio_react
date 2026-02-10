@@ -3,13 +3,41 @@ import './GearLoader.css';
 
 /**
  * Planetary Gear Loading Animation
- * Features a central sun gear with orbiting planet gears that mesh together
+ * Features a complete planetary gear system:
+ * - 1 Central sun gear (rotating clockwise)
+ * - 3 Planet gears orbiting the sun
+ * - 1 Ring gear (internal gear) surrounding all (rotating counter-clockwise)
  * Perfect for engineering/mechanical portfolio
  */
 const GearLoader = ({ size = 80, message = "Loading..." }) => {
     return (
         <div className="gear-loader-container">
             <div className="gear-system" style={{ width: size, height: size }}>
+                {/* Ring gear (outermost - internal gear with inward teeth) */}
+                <div className="ring-gear">
+                    <svg viewBox="0 0 100 100" className="gear">
+                        {/* Outer circle */}
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="var(--matcha-dark)" strokeWidth="3" />
+                        {/* Inner circle */}
+                        <circle cx="50" cy="50" r="42" fill="transparent" />
+                        {/* Inward-facing teeth (12 teeth) */}
+                        {[...Array(12)].map((_, i) => {
+                            const angle = (i * 360) / 12;
+                            return (
+                                <rect
+                                    key={i}
+                                    x="47"
+                                    y="42"
+                                    width="6"
+                                    height="8"
+                                    fill="var(--matcha-dark)"
+                                    transform={`rotate(${angle} 50 50)`}
+                                />
+                            );
+                        })}
+                    </svg>
+                </div>
+
                 {/* Sun gear (center) */}
                 <div className="sun-gear">
                     <svg viewBox="0 0 100 100" className="gear">
