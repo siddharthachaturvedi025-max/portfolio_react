@@ -1,42 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDrive } from '../context/DriveContext';
 import GearLoader from './GearLoader';
 
 /**
  * Google Drive-style modal viewer for PDFs, images, and documents
- * Dark theme with center content and translucent margins
- * Supports download tracking and page-by-page PDF navigation
- * Uses MIME types from Drive API for accurate file type detection
+ * Features proper PDF page navigation using PDF.js
+ * Includes 1.5s loading animation with planetary gears
  */
 const FileViewer = ({ file, onClose, onDownload }) => {
     const { files, fileData, loading } = useDrive();
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pdfDocument, setPdfDocument] = useState(null);
+    const canvasRef = useRef(null);
 
     if (!file) return null;
 
-    // Get file URL and metadata from Drive context with comprehensive fallback handling
+    // Get file URL and metadata from Drive context
     let fileUrl = null;
     let fileMeta = null;
 
     if (files && file.name) {
-        // Try exact match first
         fileUrl = files[file.name];
         fileMeta = fileData?.[file.name];
 
-        // Try lowercase match
         if (!fileUrl) {
             fileUrl = files[file.name.toLowerCase()];
             fileMeta = fileData?.[file.name.toLowerCase()];
         }
 
-        // Try uppercase match
         if (!fileUrl) {
             fileUrl = files[file.name.toUpperCase()];
             fileMeta = fileData?.[file.name.toUpperCase()];
         }
 
-        // Try matching base filename without extension
         if (!fileUrl) {
             const baseNameWithoutExt = file.name.split('.')[0].toLowerCase();
             Object.keys(files).forEach(key => {
@@ -52,25 +50,20 @@ const FileViewer = ({ file, onClose, onDownload }) => {
     // Reset page when file changes
     useEffect(() => {
         setCurrentPage(1);
+        setPdfDocument(null);
     }, [file.name]);
 
-    // Update loading state after timeout or when file loads
+    // Minimum 1.5s loading animation
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const minTimer = setTimeout(() => {
             setIsLoading(false);
-        }, 3000);
+        }, 1500);
 
-        if (fileUrl || !loading) {
-            setIsLoading(false);
-            clearTimeout(timer);
-        }
+        return () => clearTimeout(minTimer);
+    }, [fileUrl]);
 
-        return () => clearTimeout(timer);
-    }, [fileUrl, loading]);
-
-    // Determine file type using MIME type from Drive API (more reliable than extension)
+    // Determine file type using MIME type
     const getFileType = (filename, metadata) => {
-        // First, try using MIME type from Drive API
         if (metadata?.mimeType) {
             const mime = metadata.mimeType;
             console.log(`File: ${filename}, MIME: ${mime}`);
@@ -79,7 +72,6 @@ const FileViewer = ({ file, onClose, onDownload }) => {
             if (mime.includes('word') || mime.includes('document')) return 'word';
         }
 
-        // Fallback to extension-based detection
         if (!filename) return 'unknown';
         const ext = filename.toLowerCase().split('.').pop();
         if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return 'image';
@@ -90,8 +82,54 @@ const FileViewer = ({ file, onClose, onDownload }) => {
 
     const fileType = getFileType(file.name, fileMeta);
 
+    // Load PDF with PDF.js (for proper page navigation)
+    useEffect(() => {
+        if (fileType === 'pdf' && fileUrl && fileMeta?.downloadUrl) {
+            const loadPDF = async () => {
+                try {
+                    // Use downloadUrl for PDF.js to avoid CORS issues
+                    const loadingTask = window.pdfjsLib.getDocument(fileMeta.downloadUrl);
+                    const pdf = await loadingTask.promise;
+                    setPdfDocument(pdf);
+                    setTotalPages(pdf.numPages);
+                    console.log(`📄 PDF loaded: ${pdf.numPages} pages`);
+                } catch (error) {
+                    console.error('PDF loading error:', error);
+                }
+            };
+
+            // Check if PDF.js is loaded
+            if (window.pdfjsLib) {
+                loadPDF();
+            } else {
+                console.warn('PDF.js not loaded, falling back to iframe');
+            }
+        }
+    }, [fileType, fileUrl, fileMeta]);
+
+    // Render PDF page on canvas
+    useEffect(() => {
+        if (pdfDocument && canvasRef.current) {
+            const renderPage = async () => {
+                const page = await pdfDocument.getPage(currentPage);
+                const canvas = canvasRef.current;
+                const context = canvas.getContext('2d');
+
+                const viewport = page.getViewport({ scale: 1.5 });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                }).promise;
+            };
+
+            renderPage();
+        }
+    }, [pdfDocument, currentPage]);
+
     const handleDownload = async () => {
-        // Track download by calling Netlify function
         try {
             await fetch('/.netlify/functions/track-download', {
                 method: 'POST',
@@ -105,7 +143,6 @@ const FileViewer = ({ file, onClose, onDownload }) => {
             console.error('Error tracking download:', error);
         }
 
-        // Use downloadUrl from metadata for proper full file download
         const downloadUrl = fileMeta?.downloadUrl || fileUrl;
 
         if (downloadUrl) {
@@ -122,7 +159,7 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 onDownload(file.name, downloadUrl);
             }
         } else {
-            alert('File URL not available. Please check that the file is uploaded to Google Drive.');
+            alert('File URL not available.');
         }
     };
 
@@ -132,15 +169,10 @@ const FileViewer = ({ file, onClose, onDownload }) => {
         }
     };
 
-    // PDF page URL with specific page number
-    const getPdfPageUrl = (page) => {
-        if (!fileUrl || fileType !== 'pdf') return fileUrl;
-        // Google Drive preview supports #page= parameter
-        return `${fileUrl}#page=${page}`;
-    };
-
     const handleNextPage = () => {
-        setCurrentPage(prev => prev + 1);
+        if (currentPage < totalPages) {
+            setCurrentPage(prev => prev + 1);
+        }
     };
 
     const handlePrevPage = () => {
@@ -150,7 +182,6 @@ const FileViewer = ({ file, onClose, onDownload }) => {
     return (
         <div className="file-viewer-overlay" onClick={handleBackdropClick}>
             <div className="file-viewer-container">
-                {/* Header with title and download button */}
                 <div className="file-viewer-header">
                     <div className="file-viewer-title">
                         <i className={`fas ${fileType === 'pdf' ? 'fa-file-pdf' :
@@ -158,11 +189,6 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                                     fileType === 'word' ? 'fa-file-word' : 'fa-file'
                             }`}></i>
                         <span>{file.name}</span>
-                        {fileMeta && (
-                            <span style={{ fontSize: '0.75rem', color: '#888', marginLeft: '10px' }}>
-                                ({fileMeta.mimeType})
-                            </span>
-                        )}
                     </div>
                     <div className="file-viewer-actions">
                         <button
@@ -184,11 +210,10 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                     </div>
                 </div>
 
-                {/* Content area */}
                 <div className="file-viewer-content">
                     {isLoading ? (
                         <div className="viewer-loading">
-                            <GearLoader size={100} message="Loading file from Google Drive..." />
+                            <GearLoader size={120} message="Loading from Google Drive..." />
                         </div>
                     ) : !fileUrl ? (
                         <div className="viewer-error">
@@ -196,12 +221,12 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                             <h3>File Not Found</h3>
                             <p>Unable to load <strong>{file.name}</strong> from Google Drive.</p>
                             <div style={{ marginTop: '20px', padding: '15px', background: '#2a2a2a', borderRadius: '4px', fontSize: '0.9rem', textAlign: 'left', maxWidth: '500px' }}>
-                                <p style={{ marginBottom: '10px' }}><strong>Possible issues:</strong></p>
+                                <p style={{ marginBottom: '10px' }}><strong>Troubleshooting:</strong></p>
                                 <ul style={{ marginLeft: '20px', lineHeight: '1.8', color: '#aaa' }}>
-                                    <li>File not uploaded to Google Drive folder</li>
-                                    <li>File name doesn't match exactly (check capitalization)</li>
-                                    <li>Drive API key not configured in `.env`</li>
-                                    <li>File permissions not set to "Anyone with link"</li>
+                                    <li>Check browser console (F12) for Drive API errors</li>
+                                    <li>Verify file uploaded to Google Drive</li>
+                                    <li>Check file name matches exactly</li>
+                                    <li>Verify `.env` has API key and folder ID</li>
                                 </ul>
                             </div>
                         </div>
@@ -215,14 +240,18 @@ const FileViewer = ({ file, onClose, onDownload }) => {
 
                             {fileType === 'pdf' && (
                                 <>
-                                    <iframe
-                                        key={currentPage}
-                                        src={getPdfPageUrl(currentPage)}
-                                        className="viewer-pdf-frame"
-                                        title={file.name}
-                                        frameBorder="0"
-                                    />
-                                    {/* PDF Navigation Controls */}
+                                    {pdfDocument ? (
+                                        <div className="pdf-canvas-container">
+                                            <canvas ref={canvasRef} className="pdf-canvas" />
+                                        </div>
+                                    ) : (
+                                        <iframe
+                                            src={fileUrl}
+                                            className="viewer-pdf-frame"
+                                            title={file.name}
+                                            frameBorder="0"
+                                        />
+                                    )}
                                     <div className="pdf-navigation">
                                         <button
                                             className="pdf-nav-btn prev-btn"
@@ -234,11 +263,12 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                                         </button>
                                         <div className="pdf-page-indicator">
                                             <i className="fas fa-file-pdf"></i>
-                                            <span>Page {currentPage}</span>
+                                            <span>Page {currentPage}{totalPages > 1 ? ` / ${totalPages}` : ''}</span>
                                         </div>
                                         <button
                                             className="pdf-nav-btn next-btn"
                                             onClick={handleNextPage}
+                                            disabled={currentPage >= totalPages}
                                             title="Next Page"
                                         >
                                             <i className="fas fa-chevron-right"></i>
@@ -251,8 +281,8 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                                 <div className="viewer-word-container">
                                     <div className="viewer-word-message">
                                         <i className="fas fa-file-word"></i>
-                                        <h3>Word Document Preview</h3>
-                                        <p>Word documents cannot be previewed directly in the browser.</p>
+                                        <h3>Word Document</h3>
+                                        <p>Preview not available in browser.</p>
                                         <button
                                             className="viewer-btn download-btn-large"
                                             onClick={handleDownload}
@@ -268,8 +298,8 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                                 <div className="viewer-unknown-container">
                                     <div className="viewer-unknown-message">
                                         <i className="fas fa-file"></i>
-                                        <h3>File Preview Unavailable</h3>
-                                        <p>This file type cannot be previewed in the browser.</p>
+                                        <h3>Preview Unavailable</h3>
+                                        <p>This file type cannot be previewed.</p>
                                         <button
                                             className="viewer-btn download-btn-large"
                                             onClick={handleDownload}

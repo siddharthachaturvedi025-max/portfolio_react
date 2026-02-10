@@ -19,10 +19,15 @@ export const DriveProvider = ({ children }) => {
 
   useEffect(() => {
     if (!API_KEY || !FOLDER_ID) {
-      console.log("Drive API Key or Folder ID missing. Switching to Local Mode.");
+      console.error("❌ Drive API Key or Folder ID missing!");
+      console.log("API_KEY present:", !!API_KEY);
+      console.log("FOLDER_ID present:", !!FOLDER_ID);
+      console.log("Switching to Local Mode.");
       setLoading(false);
       return;
     }
+
+    console.log("🔑 Drive API configured, fetching files...");
 
     const fetchFiles = async () => {
       try {
@@ -78,6 +83,11 @@ export const DriveProvider = ({ children }) => {
               thumbnailUrl
             };
           });
+
+          console.log(`✅ Drive API: Loaded ${data.files.length} files`);
+          console.log('📁 Files:', Object.keys(fileMap).slice(0, 10)); // Show first 10
+        } else {
+          console.warn('⚠️ Drive API: No files found in response');
         }
 
         setFiles(fileMap);

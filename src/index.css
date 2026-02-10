@@ -891,6 +891,24 @@ footer {
   position: relative;
 }
 
+/* Carousel Items */
+.carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.carousel-item.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
 .supp-overlay,
 .file-overlay {
   position: absolute;
@@ -1040,4 +1058,21 @@ footer {
 .pdf-page-indicator i {
   color: var(--matcha-main);
   font-size: 1rem;
+}
+
+/* PDF Canvas (for PDF.js rendering) */
+.pdf-canvas-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 20px;
+}
+
+.pdf-canvas {
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
