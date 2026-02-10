@@ -711,19 +711,34 @@ footer {
   /* Navigation */
   nav {
     height: 70px;
-    padding: 0 4vw;
+    padding: 0 3vw;
   }
 
   .brand {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
+    max-width: 140px;
+    line-height: 1.2;
   }
 
   .nav-right {
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    max-width: 55%;
   }
 
-  .nav-right a {
-    font-size: 0.85rem;
+  .contact-info {
+    font-size: 0.7rem;
+  }
+
+  /* Hide email on very small screens, show only phone and LinkedIn */
+  .nav-right a[href^="mailto"] {
+    display: none;
+  }
+
+  .nav-right a[href^="https://www.linkedin"] {
+    font-size: 1rem;
   }
 
   /* Hero Section */
