@@ -99,10 +99,12 @@ const FileViewer = ({ file, onClose, onDownload }) => {
             console.error('Error tracking download:', error);
         }
 
-        // Open file for download or viewing
-        if (fileUrl) {
+        // Use downloadUrl from metadata for proper full file download
+        const downloadUrl = fileMeta?.downloadUrl || fileUrl;
+
+        if (downloadUrl) {
             const link = document.createElement('a');
-            link.href = fileUrl;
+            link.href = downloadUrl;
             link.download = file.name;
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
@@ -131,8 +133,8 @@ const FileViewer = ({ file, onClose, onDownload }) => {
                 <div className="file-viewer-header">
                     <div className="file-viewer-title">
                         <i className={`fas ${fileType === 'pdf' ? 'fa-file-pdf' :
-                                fileType === 'image' ? 'fa-image' :
-                                    fileType === 'word' ? 'fa-file-word' : 'fa-file'
+                            fileType === 'image' ? 'fa-image' :
+                                fileType === 'word' ? 'fa-file-word' : 'fa-file'
                             }`}></i>
                         <span>{file.name}</span>
                         {fileMeta && (

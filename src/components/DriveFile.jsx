@@ -6,16 +6,23 @@ import { useDrive } from '../context/DriveContext';
  * Supports: JPG, PNG, PDF (with preview), Word (DOCX), and other documents
  */
 const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
-    const { files, loading } = useDrive();
+    const { files, fileData, loading } = useDrive();
     const [error, setError] = useState(false);
 
     // Get file URL from Drive
     let fileUrl = null;
+    let fileMeta = null;
+
     if (files && files[name]) {
         fileUrl = files[name];
+        fileMeta = fileData?.[name];
     } else if (files && name && files[name.toLowerCase()]) {
         fileUrl = files[name.toLowerCase()];
+        fileMeta = fileData?.[name.toLowerCase()];
     }
+
+    // For images, use thumbnail URL for better performance in grids
+    const displayUrl = fileMeta?.thumbnailUrl || fileUrl;
 
     // Determine file type from extension if type is 'auto'
     const getFileType = (filename) => {
@@ -53,7 +60,7 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
 
         return (
             <img
-                src={fileUrl}
+                src={displayUrl}
                 alt={alt}
                 className={className}
                 onError={() => setError(true)}

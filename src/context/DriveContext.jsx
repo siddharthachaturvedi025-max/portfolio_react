@@ -40,16 +40,40 @@ export const DriveProvider = ({ children }) => {
 
         if (data.files) {
           data.files.forEach(file => {
-            // Map filename to a usable URL
-            // Using the lh3.googleusercontent.com hack for direct display
-            fileMap[file.name] = `https://lh3.googleusercontent.com/d/${file.id}`;
-            // Also store lowercase version for robust matching
-            fileMap[file.name.toLowerCase()] = `https://lh3.googleusercontent.com/d/${file.id}`;
+            // Generate proper URLs based on MIME type for full file access
+            let viewUrl, downloadUrl;
 
-            // Rich Metadata
-            const dlUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
-            metaMap[file.name] = { ...file, downloadUrl: dlUrl };
-            metaMap[file.name.toLowerCase()] = { ...file, downloadUrl: dlUrl };
+            if (file.mimeType === 'application/pdf') {
+              // PDFs: Use preview URL for full scrollable viewing in iframe
+              viewUrl = `https://drive.google.com/file/d/${file.id}/preview`;
+              downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+            } else if (file.mimeType?.startsWith('image/')) {
+              // Images: Use direct view URL for high quality
+              viewUrl = `https://drive.google.com/uc?export=view&id=${file.id}`;
+              downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+            } else {
+              // Other files: Direct download
+              viewUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+              downloadUrl = `https://drive.google.com/uc?export=download&id=${file.id}`;
+            }
+
+            // Map filename to viewable URL (for thumbnails and viewer)
+            fileMap[file.name] = viewUrl;
+            fileMap[file.name.toLowerCase()] = viewUrl;
+
+            // Rich Metadata with both URLs
+            metaMap[file.name] = {
+              ...file,
+              viewUrl,
+              downloadUrl,
+              thumbnailUrl: `https://lh3.googleusercontent.com/d/${file.id}` // For thumbnails
+            };
+            metaMap[file.name.toLowerCase()] = {
+              ...file,
+              viewUrl,
+              downloadUrl,
+              thumbnailUrl: `https://lh3.googleusercontent.com/d/${file.id}`
+            };
           });
         }
 
