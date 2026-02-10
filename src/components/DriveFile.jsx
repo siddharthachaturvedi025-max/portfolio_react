@@ -69,49 +69,41 @@ const DriveFile = ({ name, alt, type = 'auto', className, ...props }) => {
         );
     }
 
-    // Handle PDF files - Show thumbnail image for grid displays
+    // Handle PDF files - Show first page as thumbnail using iframe
     if (fileType === 'pdf') {
-        // Use thumbnail image for PDF preview in cards/grids
-        const pdfThumbnailUrl = fileMeta?.thumbnailUrl || displayUrl;
+        // Use preview URL to show first page of PDF
+        const pdfPreviewUrl = fileMeta?.viewUrl || fileUrl;
 
         return (
             <div className={`file-display pdf-display ${className}`} style={{ background: 'transparent', padding: 0 }}>
                 <div className="pdf-preview-wrapper">
-                    {pdfThumbnailUrl ? (
+                    {pdfPreviewUrl ? (
                         <>
-                            {/* Show thumbnail image instead of iframe for better performance */}
-                            <img
-                                src={pdfThumbnailUrl}
-                                alt={alt || name}
-                                className="pdf-thumbnail-img"
-                                onError={(e) => {
-                                    // Fallback to placeholder on error
-                                    e.target.style.display = 'none';
-                                    e.target.nextElementSibling.style.display = 'flex';
+                            {/* Show first page of PDF in iframe */}
+                            <iframe
+                                src={`${pdfPreviewUrl}`}
+                                className="pdf-thumbnail-iframe"
+                                title={alt || name}
+                                frameBorder="0"
+                                scrolling="no"
+                                style={{
+                                    width: '100%',
+                                    height: '260px',
+                                    border: 'none',
+                                    pointerEvents: 'none',
+                                    display: 'block',
+                                    borderRadius: '8px',
+                                    background: '#fff'
                                 }}
                             />
-                            {/* Fallback placeholder (hidden by default) */}
-                            <div className="file-preview" style={{
-                                background: 'linear-gradient(135deg, var(--matcha-main) 0%, var(--matcha-dark) 100%)',
-                                padding: '30px',
-                                minHeight: '260px',
-                                borderRadius: '8px',
-                                display: 'none',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <i className="fas fa-file-pdf" style={{ fontSize: '3rem', color: '#fff' }}></i>
-                                <p style={{ marginTop: '10px', fontWeight: '500', color: '#fff' }}>{alt || name}</p>
-                            </div>
                             <div className="pdf-overlay">
                                 <a
-                                    href={fileMeta?.viewUrl || fileUrl}
+                                    href={pdfPreviewUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="file-download-btn"
                                     onClick={(e) => {
-                                        e.stopPropagation(); // Prevent triggering parent click handlers
+                                        e.stopPropagation();
                                     }}
                                 >
                                     <i className="fas fa-external-link-alt"></i> View Full PDF

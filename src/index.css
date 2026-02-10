@@ -1032,6 +1032,16 @@ footer {
   /* Prevent interaction with the iframe */
 }
 
+.pdf-thumbnail-iframe {
+  width: 100%;
+  height: 260px;
+  border: none;
+  pointer-events: none;
+  display: block;
+  border-radius: 8px;
+  background: #fff;
+}
+
 .pdf-thumbnail-img {
   width: 100%;
   height: 260px;
